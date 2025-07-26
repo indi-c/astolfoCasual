@@ -11,14 +11,14 @@
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
       perSystem = { pkgs, system, ... }: {
-        packages.grub-theme-mytheme = pkgs.stdenv.mkDerivation {
-          pname = "grub-theme-mytheme";
+        packages.grubstolfoCasual = pkgs.stdenv.mkDerivation {
+          pname = "grubstolfoCasual";
           version = "0.1";
           src = pkgs.lib.cleanSource ./.;
 
           dontBuild = true;
           installPhase = ''
-            dst="$out/share/grub/themes/mytheme"
+            dst="$out/share/grub/themes/astolfoCasual"
             mkdir -p "$dst"
             cp -r ./* "$dst"
           '';
@@ -36,7 +36,7 @@
 
       flake = {
         overlays.default = final: prev: {
-          grub-theme-mytheme = self.packages.${prev.system}.grub-theme-mytheme;
+          grubstolfoCasual = self.packages.${prev.system}.grubstolfoCasual;
         };
       };
     };
