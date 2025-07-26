@@ -1,21 +1,17 @@
 {
-  description = "GRUB theme flake";
+  description = "My GRUB theme as a Nix flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05"; # or your channel
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = { self, nixpkgs }: 
-    let
+  outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" "aarch64-linux" ];
-      forAllSystems = f:
-        builtins.listToAttrs (map (system: { name = system; value = f system; }) systems);
-    in {
-      packages = forAllSystems (system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-        in
-        pkgs.stdenv.mkDerivation {
+
+      perSystem = { pkgs, system, ... }: {
+        packages.grub-theme-mytheme = pkgs.stdenv.mkDerivation {
           pname = "grub-theme-mytheme";
           version = "0.1";
           src = pkgs.lib.cleanSource ./.;
@@ -27,14 +23,21 @@
             cp -r ./* "$dst"
           '';
 
-          meta = {
-            description = "My GRUB theme";
-            platforms = pkgs.lib.platforms.linux;
-            license = pkgs.lib.licenses.unfreeRedistributable; # or your license
+          meta = with pkgs.lib; {
+            description = "A custom GRUB theme";
+            platforms = platforms.linux;
+            license = licenses.unlicense; # change if needed
           };
-        }
-      );
+        };
 
-      defaultPackage = forAllSystems (system: self.packages.${system});
+        # Set default package to our theme
+        packages.default = self.packages.${system}.grub-theme-mytheme;
+      };
+
+      flake = {
+        overlays.default = final: prev: {
+          grub-theme-mytheme = self.packages.${prev.system}.grub-theme-mytheme;
+        };
+      };
     };
 }
