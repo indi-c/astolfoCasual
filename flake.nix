@@ -21,4 +21,5 @@
       }) {});
     defaultPackage = forAllSystems (pkgs: self.packages.${pkgs.system});
   };
+  packages.default = self.defaultPackage;
 }
