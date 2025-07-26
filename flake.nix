@@ -6,7 +6,7 @@
     forAllSystems = f: nixpkgs.lib.genAttrs systems (system:
       f (import nixpkgs { inherit system; }));
   in {
-    packages = forAllSystems (pkgs:
+    grubstolfo = forAllSystems (pkgs:
       pkgs.callPackage ({ stdenv, lib }: stdenv.mkDerivation {
         pname = "grubstolfo-casual";
         version = "1.0";
@@ -19,7 +19,7 @@
         '';
         meta.platforms = lib.platforms.linux;
       }) {});
-    defaultPackage = forAllSystems (pkgs: self.packages.${pkgs.system});
+    defaultPackage = forAllSystems (pkgs: self.grubstolfo.${pkgs.system});
     packages.default = self.defaultPackage;
   };
 }
