@@ -20,6 +20,6 @@
         meta.platforms = lib.platforms.linux;
       }) {});
     defaultPackage = forAllSystems (pkgs: self.packages.${pkgs.system});
+    packages.default = self.defaultPackage;
   };
-  packages.default = self.defaultPackage;
 }
