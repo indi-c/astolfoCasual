@@ -31,7 +31,7 @@
         };
 
         # Set default package to our theme
-        packages.default = self.packages.${system}.grub-theme-mytheme;
+        packages.default = self.packages.${system}.grubstolfoCasual;
       };
 
       flake = {
